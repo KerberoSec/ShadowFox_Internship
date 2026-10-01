@@ -1,23 +1,14 @@
+<div align="center">
+
 # ShadowFox Cyber Security Internship
 
-Assessment Type: Web Application Penetration Test
-Level: Beginner
-Status: Completed
-Domain: Cyber Security
+**Beginner Level Security Assessment**
 
-*Conducted on an intentionally vulnerable web application for educational purposes only*
+Professional penetration testing assessment conducted as part of the ShadowFox Cyber Security Internship Program.
 
-## Candidate Information
+</div>
 
-| Field | Details |
-|:------|:--------|
-| **Name** | Arun Kumar |
-| **Email** | arungaming1973@gmail.com |
-| **University** | Himachal Pradesh Technical University |
-| **Domain** | Cyber Security |
-| **SFPID** | SF PID 2026 C1152 |
-| **Mentor** | Mr. Surendharan |
-| **Report Date** | March 31, 2026 |
+---
 
 ## Overview
 
@@ -25,7 +16,29 @@ This repository contains the complete **Beginner Level Security Assessment** per
 
 The objective was to simulate a real world **black box penetration testing scenario** and identify security weaknesses using industry standard tools and methodologies.
 
-> **Disclaimer:** All penetration testing activities documented here were performed exclusively on intentionally vulnerable, publicly accessible practice systems provided by Acunetix. No real production systems or unauthorized targets were accessed at any point.
+> **Assessment Scope**
+>
+> This assessment was performed only against `testasp.vulnweb.com`, an intentionally vulnerable practice application provided by Acunetix for legal security training. No production systems or unauthorized targets were accessed.
+
+## Contents
+
+1. [Target Information](#target-information)
+2. [Methodology](#methodology)
+3. [Tasks Summary](#tasks-summary)
+4. [Task 1: Open Port Discovery Using Nmap](#task-1-open-port-discovery-using-nmap)
+5. [Task 2: Directory Enumeration Using Gobuster and FFUF](#task-2-directory-enumeration-using-gobuster-and-ffuf)
+6. [Task 3: Plaintext Credential Capture Using Wireshark](#task-3-plaintext-credential-capture-using-wireshark)
+7. [Consolidated Vulnerability Assessment](#consolidated-vulnerability-assessment)
+8. [Recommendations](#recommendations)
+9. [Tools Used](#tools-used)
+10. [Repository Structure](#repository-structure)
+11. [Final Statistics](#final-statistics)
+12. [Learning Outcomes](#learning-outcomes)
+13. [Report](#report)
+14. [Legal and Ethical Notice](#legal-and-ethical-notice)
+15. [Contact](#contact)
+
+---
 
 ## Target Information
 
@@ -39,6 +52,8 @@ The objective was to simulate a real world **black box penetration testing scena
 | **Application Stack** | Classic ASP (Active Server Pages) |
 | **Hosting** | Amazon Web Services EC2 (US West 2, Oregon) |
 | **Protocol** | HTTP only. No HTTPS detected. |
+
+---
 
 ## Methodology
 
@@ -54,6 +69,8 @@ Phase 3: Exploitation and Verification
 Phase 4: Reporting and Documentation
 ```
 
+---
+
 ## Tasks Summary
 
 | # | Task | Tools | Key Finding | Status |
@@ -61,6 +78,8 @@ Phase 4: Reporting and Documentation
 | 1 | Open Port Discovery | Nmap 7.98 | Port 80 open with IIS 8.5 and missing security headers | Completed |
 | 2 | Directory Enumeration | Gobuster 3.8.2 and FFUF 2.1 | 14 directories found including sensitive system folders | Completed |
 | 3 | Credential Interception | Wireshark | Plaintext credentials captured from HTTP POST packets | Completed |
+
+---
 
 ## Task 1: Open Port Discovery Using Nmap
 
@@ -108,6 +127,8 @@ Nmap done: 1 IP address (1 host up) scanned in 41.33 seconds
 | HTTP TRACE method enabled | Medium | Enables Cross Site Tracing (XST) attacks to steal session tokens |
 | HttpOnly flag missing on session cookie | Medium | Session cookies accessible to JavaScript and exploitable via XSS |
 
+---
+
 ## Task 2: Directory Enumeration Using Gobuster and FFUF
 
 ### Objective
@@ -140,6 +161,8 @@ ffuf -u http://testasp.vulnweb.com/FUZZ -w /usr/share/wordlists/dirb/common.txt
 
 > **Note:** Both `/images/` and `/Images/` returning identical responses confirms a **Windows NTFS case insensitive file system**, consistent with the IIS 8.5 identification from Task 1.
 
+---
+
 ## Task 3: Plaintext Credential Capture Using Wireshark
 
 ### Objective
@@ -153,7 +176,7 @@ Intercept live network traffic during an active login session and extract creden
 http.request.method == "POST"
 ```
 
-### Step by Step Process
+### Procedure
 
 1. Launch Wireshark with superuser privileges: `sudo wireshark`
 2. Select the `eth0` interface and start the capture
@@ -192,7 +215,9 @@ tfUName=hacker123&tfUPass=hacker1233%40gmail.com
 | Login | Username | `hacker123` | hacker123 |
 | Login | Password | `hacker1233%40gmail.com` | hacker1233@gmail.com |
 
-> **Important:** URL encoding is NOT encryption. The `%40` substitution for `@` is trivially reversible and provides zero security. The session cookie `ASPSESSIONIDCQDABSCC=GNPAOENAJCMDFIDFDCIDLFKO` was also visible in every captured request, enabling session hijacking.
+> **Important:** URL encoding is not encryption. The `%40` substitution for `@` is trivially reversible and does not provide security. The session cookie `ASPSESSIONIDCQDABSCC=GNPAOENAJCMDFIDFDCIDLFKO` was also visible in every captured request, enabling session hijacking.
+
+---
 
 ## Consolidated Vulnerability Assessment
 
@@ -210,6 +235,8 @@ tfUName=hacker123&tfUPass=hacker1233%40gmail.com
 
 **Total: 9 vulnerabilities. 2 Critical, 3 High, 4 Medium.**
 
+---
+
 ## Recommendations
 
 | Priority | Recommendation | Addresses |
@@ -224,16 +251,20 @@ tfUName=hacker123&tfUPass=hacker1233%40gmail.com
 | Low | Sanitise robots.txt and remove sensitive path disclosures | V07 |
 | Medium | Conduct regular security assessments (annual penetration test and monthly scans) | All |
 
+---
+
 ## Tools Used
 
 | Tool | Version | Purpose |
 |:-----|:--------|:--------|
 | **Nmap** | 7.98 | Port scanning, service detection, OS fingerprinting, NSE scripts |
-| **Gobuster** | 3.8.2 | Web directory brute force enumeration |
+| **Gobuster** | 3.8.2 | Web directory directory enumeration |
 | **FFUF** | 2.1.0 | Web fuzzing and cross validation of directory enumeration |
 | **Wireshark** | Latest | Live packet capture, HTTP traffic analysis, credential extraction |
 | **Firefox ESR** | 140.0 | Generating authentic HTTP traffic to the target |
 | **Kali Linux** | 2024 | Primary testing environment (WSL2 on Windows 10) |
+
+---
 
 ## Repository Structure
 
@@ -242,6 +273,8 @@ shadowfox cybersecurity internship
     README.md
     Arun_Kumar_ShadowFox_Beginner_Report_Final.pdf
 ```
+
+---
 
 ## Final Statistics
 
@@ -253,15 +286,19 @@ shadowfox cybersecurity internship
 | Critical Findings | 2 |
 | Credential Sets Captured | 2 |
 
+---
+
 ## Learning Outcomes
 
 * Practical proficiency with Nmap port scanning and NSE script interpretation
 * Web directory enumeration using multiple tools and cross validation
 * Live network traffic analysis and credential extraction with Wireshark
 * Understanding the critical difference between URL encoding and encryption
-* Professional security report writing with CVSS rated findings
+* Professional security report writing with CVSS assessed findings
 * Applied NIST SP 800 115 and OWASP Testing Guide v4 methodology
-* Hands on experience with the full reconnaissance, exploitation, and reporting lifecycle
+* Practical experience with the full reconnaissance, exploitation, and reporting lifecycle
+
+---
 
 ## Report
 
@@ -269,16 +306,23 @@ The complete detailed report with screenshots, annotated terminal outputs, and f
 
 [`Arun_Kumar_ShadowFox_Beginner_Report_Final.pdf`](./Arun_Kumar_ShadowFox_Beginner_Report_Final.pdf)
 
+---
+
 ## Legal and Ethical Notice
 
 All testing activities documented in this repository were performed **exclusively** on `testasp.vulnweb.com`, an intentionally vulnerable application provided by **Acunetix** for security education and training purposes. This system is freely and legally accessible for penetration testing practice.
 
 No real users, production systems, private networks, or unauthorized targets were accessed. This work was conducted strictly for **educational purposes** as part of the ShadowFox Cyber Security Internship Program.
 
+---
+
 ## Contact
 
 **Arun Kumar** | Cyber Security Intern | ShadowFox
-Email: arungaming1973@gmail.com
-University: Himachal Pradesh Technical University
 
-*"Security is not a product, but a process."*
+| | |
+|:--|:--|
+| **Email** | arungaming1973@gmail.com |
+| **University** | Himachal Pradesh Technical University |
+
+---
